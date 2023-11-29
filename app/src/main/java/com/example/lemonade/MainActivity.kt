@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -70,6 +71,14 @@ fun LemonadeSteps(modifier: Modifier = Modifier){
         else -> R.drawable.lemon_restart
     }
 
+    val textContextDescrp = when (result){
+        1 -> stringResource(R.string.lemon_tree_content_description)
+        2 -> stringResource(R.string.lemon_content_description)
+        3 -> stringResource(R.string.glass_of_lemonade_content_description)
+        4 -> stringResource(R.string.empty_glass_content_description)
+        else -> stringResource(R.string.empty_glass_content_description)
+    }
+
     Column(
         modifier = Modifier
             .background(color = Color.Yellow)
@@ -94,11 +103,12 @@ fun LemonadeSteps(modifier: Modifier = Modifier){
 
         Image(
             painter = painterResource(id = imageResource),
-            contentDescription = result.toString(),
+            contentDescription = stringResource(id = result),
             modifier = Modifier
                 .padding(all = 16.dp)
                 .background(Color.LightGray, shape = RoundedCornerShape(20.dp))
                 .scale(0.8f)
+                .size(250.dp)
                 .clickable {
                     when (result) {
                         1 -> result = 2
@@ -109,6 +119,7 @@ fun LemonadeSteps(modifier: Modifier = Modifier){
                                 squeezeClickCount = 0
                             }
                         }
+
                         3 -> result = 4
                         4 -> {
                             result = 1
