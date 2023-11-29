@@ -1,10 +1,13 @@
 package com.example.lemonade
 
+import android.graphics.drawable.shapes.ArcShape
+import android.graphics.drawable.shapes.OvalShape
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,9 +29,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.lemonade.ui.theme.LemonadeTheme
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,16 +56,19 @@ fun LemonadeSteps(modifier: Modifier = Modifier){
         mutableStateOf(1)
     }
 
+    var squeezeClickCount by remember {
+        mutableStateOf(0)
+    }
+
+    var random = (0..2).random()
+
     val imageResource = when (result){
         1 -> R.drawable.lemon_tree
         2 -> R.drawable.lemon_squeeze
         3 -> R.drawable.lemon_drink
+        4 -> R.drawable.lemon_restart
         else -> R.drawable.lemon_restart
     }
-/*
-    Box(modifier = modifier){
-        Text(text = stringResource(R.string.Title))
-    }*/
 
     Column(
         modifier = Modifier
@@ -65,8 +78,11 @@ fun LemonadeSteps(modifier: Modifier = Modifier){
     ) {
         Text(
             text = stringResource(R.string.Title),
-            modifier = Modifer.padding(
-
+            fontSize = 25.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(
+                top = 20.dp,
+                bottom = 20.dp
             )
         )
     }
@@ -78,15 +94,46 @@ fun LemonadeSteps(modifier: Modifier = Modifier){
 
         Image(
             painter = painterResource(id = imageResource),
-            contentDescription = result.toString()
+            contentDescription = result.toString(),
+            modifier = Modifier
+                .padding(all = 16.dp)
+                .background(Color.LightGray, shape = RoundedCornerShape(20.dp))
+                .scale(0.8f)
+                .clickable {
+                    when (result) {
+                        1 -> result = 2
+                        2 -> {
+                            squeezeClickCount++
+                            if (squeezeClickCount == (2 + random)) {
+                                result = 3
+                                squeezeClickCount = 0
+                            }
+                        }
+                        3 -> result = 4
+                        4 -> {
+                            result = 1
+                            random = (0..2).random()
+                        }
+                    }
+                }
         )
+
         Text(
-            text = stringResource(R.string.lemon_tree)
+            text = when (result) {
+                1 -> stringResource(R.string.lemon_tree)
+                2 -> stringResource(R.string.tap_lemon)
+                3 -> stringResource(R.string.tap_lemonade)
+                4 -> stringResource(R.string.tap_empty_glass)
+                else -> stringResource(R.string.tap_empty_glass)
+            },
+            modifier = Modifier.padding(
+                top = 20.dp,
+                bottom = 20.dp
+            )
         )
     }
-
-
 }
+
 
 @Preview(showBackground = true)
 @Composable
