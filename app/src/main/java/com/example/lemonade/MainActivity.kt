@@ -51,19 +51,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun LemonadeSteps(modifier: Modifier = Modifier){
+fun LemonadeSteps(modifier: Modifier = Modifier) {
+    var result by remember { mutableStateOf(1) }
+    var squeezeClickCount by remember { mutableStateOf(0) }
+    var random by remember { mutableStateOf((0..2).random()) }
 
-    var result by remember {
-        mutableStateOf(1)
-    }
-
-    var squeezeClickCount by remember {
-        mutableStateOf(0)
-    }
-
-    var random = (0..2).random()
-
-    val imageResource = when (result){
+    val imageResource = when (result) {
         1 -> R.drawable.lemon_tree
         2 -> R.drawable.lemon_squeeze
         3 -> R.drawable.lemon_drink
@@ -71,7 +64,7 @@ fun LemonadeSteps(modifier: Modifier = Modifier){
         else -> R.drawable.lemon_restart
     }
 
-    val textContextDescrp = when (result){
+    val textContextDescrp = when (result) {
         1 -> stringResource(R.string.lemon_tree_content_description)
         2 -> stringResource(R.string.lemon_content_description)
         3 -> stringResource(R.string.glass_of_lemonade_content_description)
@@ -99,11 +92,11 @@ fun LemonadeSteps(modifier: Modifier = Modifier){
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
 
         Image(
             painter = painterResource(id = imageResource),
-            contentDescription = stringResource(id = result),
+            contentDescription = textContextDescrp, // Utiliza textContextDescrp aquí
             modifier = Modifier
                 .padding(all = 16.dp)
                 .background(Color.LightGray, shape = RoundedCornerShape(20.dp))
@@ -119,7 +112,6 @@ fun LemonadeSteps(modifier: Modifier = Modifier){
                                 squeezeClickCount = 0
                             }
                         }
-
                         3 -> result = 4
                         4 -> {
                             result = 1
@@ -144,7 +136,6 @@ fun LemonadeSteps(modifier: Modifier = Modifier){
         )
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
